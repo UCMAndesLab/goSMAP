@@ -50,7 +50,7 @@ func TestQuery(t *testing.T){
     if err != nil{
       t.Error(err.Error())
     }
-    conn.query(fmt.Sprintf("select * where uuid='%s'", uuid))
+    conn.Query(fmt.Sprintf("select * where uuid='%s'", uuid))
 }
 
 func TestTags(t *testing.T){

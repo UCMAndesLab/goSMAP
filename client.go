@@ -5,11 +5,13 @@ import (
     "net/http"
     "encoding/json"
     "io/ioutil"
+    "github.com/bradfitz/gomemcache/memcache"
 )
 
 type sMAPConnection struct{
   Url string
   APIkey string
+  mc *memcache.Client
 }
 
 type rootPage struct{
@@ -47,6 +49,7 @@ func Connect(url string, key string)(sMAPConnection, error){
   conn := sMAPConnection{
     Url:url,
     APIkey:key,
+    mc: memcache.New("127.0.0.1:11211"),
   }
   err := Validateconnection(conn)
   return conn, err

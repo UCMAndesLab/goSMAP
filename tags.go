@@ -19,10 +19,13 @@ type sMAPTags struct{
     Metadata map[string]interface{}
 }
 
+func tagKey(uuid string) string{
+  return "tag_"+uuid
+}
+
 func (conn *sMAPConnection) Tags(uuid string) []sMAPTags{
-  key := "tag_"+uuid
-  mc := memcache.New("127.0.0.1:11211")
-  item, err := mc.Get(key)
+  key := tagKey(uuid)
+  item, err := conn.mc.Get(key)
 
   var s []byte;
   if err == nil {
@@ -32,7 +35,7 @@ func (conn *sMAPConnection) Tags(uuid string) []sMAPTags{
     // Cache Miss
     q := fmt.Sprintf("select * where uuid='%s'", uuid)
     s = conn.Query(q)
-    mc.Set(&memcache.Item{Key: key, Value: s, Expiration: 3600})
+    conn.mc.Set(&memcache.Item{Key: key, Value: s, Expiration: 3600})
   }
   d := make([]sMAPTags,0)
   json.Unmarshal(s, &d)
