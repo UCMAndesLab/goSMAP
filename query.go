@@ -8,13 +8,6 @@ import (
   "io/ioutil"
 )
 
-
-type sMAPData struct{
-  Uuid string `json:"uuid"`
-  Readings [][]json.Number  `json:"Readings"`
-}
-
-
 func (conn *sMAPConnection) Query(q string) ([]byte){
   url := fmt.Sprintf("%sapi/query?key=%s", conn.Url, conn.APIkey)
   response, err := http.Post(url, "text/smap", bytes.NewBufferString(q))

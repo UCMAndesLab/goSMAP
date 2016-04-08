@@ -6,19 +6,6 @@ import (
   "github.com/bradfitz/gomemcache/memcache"
 )
 
-type sMAPTagsProperties struct{
-  Timezone string
-  UnitofMeasure string
-  ReadingType string
-}
-
-type sMAPTags struct{
-    Uuid string `json:"uuid"`
-    Properties sMAPTagsProperties
-    Path string
-    Metadata map[string]interface{}
-}
-
 func tagKey(uuid string) string{
   return "tag_"+uuid
 }
