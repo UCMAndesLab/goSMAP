@@ -15,7 +15,7 @@ type sMAPData struct{
 }
 
 
-func (conn *sMAPConnection) query(q string) ([]byte){
+func (conn *sMAPConnection) Query(q string) ([]byte){
   url := fmt.Sprintf("%sapi/query?key=%s", conn.Url, conn.APIkey)
   response, err := http.Post(url, "text/smap", bytes.NewBufferString(q))
   if err != nil {
@@ -31,7 +31,7 @@ func (conn *sMAPConnection) query(q string) ([]byte){
 }
 
 // We will not cache diddly
-func (conn *sMAPConnection) data_uuid(uuid string, starttime int, endtime int, limit int) ([]sMAPData, error){
+func (conn *sMAPConnection) Data_uuid(uuid string, starttime int, endtime int, limit int) ([]sMAPData, error){
   starttime_str := smap_time(starttime)
   d := make([]sMAPData,0)
 

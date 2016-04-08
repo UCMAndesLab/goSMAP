@@ -1,4 +1,4 @@
-package gosMAP 
+package gosMAP
 
 import (
     "fmt"
@@ -43,7 +43,7 @@ func Validateconnection(conn sMAPConnection)(error){
   }
 }
 
-func connect(url string, key string)(sMAPConnection, error){
+func Connect(url string, key string)(sMAPConnection, error){
   conn := sMAPConnection{
     Url:url,
     APIkey:key,

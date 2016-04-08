@@ -25,17 +25,17 @@ func init(){
 }
 
 func TestConnection(t *testing.T) {
-    _,err := connect(server, apiKey)
+    _,err := Connect(server, apiKey)
     if err != nil{
       t.Error(err.Error())
     }
 }
 
 func TestDataCollection(t *testing.T){
-    conn,err := connect(server, apiKey)
+    conn,err := Connect(server, apiKey)
     if err == nil{
       fmt.Printf("%s\n", conn.Url)
-      _, err := conn.data_uuid(uuid, 0, 0, 10)
+      _, err := conn.Data_uuid(uuid, 0, 0, 10)
 
       if err !=nil {
         t.Error(err.Error())
@@ -46,7 +46,7 @@ func TestDataCollection(t *testing.T){
 }
 
 func TestQuery(t *testing.T){
-    conn,err := connect(server, apiKey)
+    conn,err := Connect(server, apiKey)
     if err != nil{
       t.Error(err.Error())
     }
@@ -54,11 +54,11 @@ func TestQuery(t *testing.T){
 }
 
 func TestTags(t *testing.T){
-    conn,err := connect(server, apiKey)
+    conn,err := Connect(server, apiKey)
     if err != nil{
       t.Error(err.Error())
     }
-    d := conn.tags(uuid)
+    d := conn.Tags(uuid)
     if (uuid != d[0].Uuid){
       t.Error("UUID Mismatch")
     }
@@ -66,8 +66,8 @@ func TestTags(t *testing.T){
 }
 
 func BenchmarkTagsCache(b *testing.B) {
-    conn,_ := connect(server, apiKey)
+    conn,_ := Connect(server, apiKey)
     for i := 0; i < b.N; i++ {
-      conn.tags(uuid)
+      conn.Tags(uuid)
     }
 }
