@@ -10,9 +10,13 @@ var server string
 var apiKey string
 var uuid string
 func init(){
-  cfg, err := ini.Load("test.ini")
+
+  cfg, err := ini.Load("test.mine.ini")
   if err != nil{
-    panic(err)
+    cfg, err = ini.Load("test.ini")
+    if err != nil{
+      panic(err)
+    }
   }
 
   server = cfg.Section("MAIN").Key("server").String()
