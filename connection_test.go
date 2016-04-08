@@ -65,6 +65,18 @@ func TestTags(t *testing.T){
     fmt.Printf("%s\n", string(d[0].Metadata["SourceName"].(string)))
 }
 
+func TestPrev(t *testing.T){
+  conn,err := Connect(server, apiKey)
+    if err != nil{
+      t.Error(err.Error())
+    }
+    d,err := conn.Prev(uuid)
+    if err != nil{
+      t.Error(err.Error())
+    }
+    fmt.Printf("%s\n", d[0].Readings[0][1].String())
+}
+
 func BenchmarkTagsCache(b *testing.B) {
     conn,_ := Connect(server, apiKey)
     for i := 0; i < b.N; i++ {
