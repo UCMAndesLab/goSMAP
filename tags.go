@@ -10,7 +10,7 @@ func tagKey(uuid string) string{
   return "tag_"+uuid
 }
 
-func (conn *sMAPConnection) Tags(uuid string) []sMAPTags{
+func (conn *sMAPConnection) Tags(uuid string) []SMAPTags{
   key := tagKey(uuid)
   item, err := conn.mc.Get(key)
 
@@ -24,7 +24,7 @@ func (conn *sMAPConnection) Tags(uuid string) []sMAPTags{
     s = conn.Query(q)
     conn.mc.Set(&memcache.Item{Key: key, Value: s, Expiration: 3600})
   }
-  d := make([]sMAPTags,0)
+  d := make([]SMAPTags,0)
   json.Unmarshal(s, &d)
   return d;
 }

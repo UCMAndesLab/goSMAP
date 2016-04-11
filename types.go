@@ -8,7 +8,7 @@ type rawsMAPData struct{
   Readings [][]json.Number  `json:"Readings"`
 }
 
-type sMAPData struct{
+type SMAPData struct{
   Uuid string
   Readings []readPair
 }
@@ -24,7 +24,7 @@ type sMAPTagsProperties struct{
   ReadingType string
 }
 
-type sMAPTags struct{
+type SMAPTags struct{
     Uuid string `json:"uuid"`
     Properties sMAPTagsProperties
     Path string

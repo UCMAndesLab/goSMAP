@@ -23,7 +23,7 @@ func (conn *sMAPConnection) Query(q string) ([]byte){
 }
 
 // We will not cache diddly
-func (conn *sMAPConnection) Data_uuid(uuid string, starttime int, endtime int, limit int) ([]sMAPData, error){
+func (conn *sMAPConnection) Data_uuid(uuid string, starttime int, endtime int, limit int) ([]SMAPData, error){
   starttime_str := smap_time(starttime)
 
   // endtime doesn't work
