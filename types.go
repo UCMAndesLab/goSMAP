@@ -14,8 +14,8 @@ type sMAPData struct{
 }
 
 type readPair struct{
-  time time.Time
-  value float64
+  Time time.Time
+  Value float64
 }
 
 type sMAPTagsProperties struct{

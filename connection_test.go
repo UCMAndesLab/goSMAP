@@ -74,8 +74,8 @@ func TestPrev(t *testing.T){
     if err != nil{
       t.Error(err.Error())
     }
-    fmt.Printf("%f\n", d[0].Readings[0].value)
-    fmt.Printf("%s\n", d[0].Readings[0].time)
+    fmt.Printf("%f\n", d[0].Readings[0].Value)
+    fmt.Printf("%s\n", d[0].Readings[0].Time)
 }
 
 func BenchmarkTagsCache(b *testing.B) {
