@@ -1,10 +1,21 @@
 package gosMAP
 import(
   "encoding/json"
+  "time"
 )
-type sMAPData struct{
+type rawsMAPData struct{
   Uuid string `json:"uuid"`
   Readings [][]json.Number  `json:"Readings"`
+}
+
+type sMAPData struct{
+  Uuid string
+  Readings []readPair
+}
+
+type readPair struct{
+  time time.Time
+  value float64
 }
 
 type sMAPTagsProperties struct{

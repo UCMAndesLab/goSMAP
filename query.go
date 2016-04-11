@@ -26,7 +26,6 @@ func (conn *sMAPConnection) Query(q string) ([]byte){
 // We will not cache diddly
 func (conn *sMAPConnection) Data_uuid(uuid string, starttime int, endtime int, limit int) ([]sMAPData, error){
   starttime_str := smap_time(starttime)
-  d := make([]sMAPData,0)
 
   // endtime doesn't work
   if endtime == 0 {
@@ -36,25 +35,45 @@ func (conn *sMAPConnection) Data_uuid(uuid string, starttime int, endtime int, l
 
   url := fmt.Sprintf("%sapi/data/uuid/%s?startime=%s&endtime=%s&limit=%d", conn.Url, uuid, starttime_str, endtime_str, limit)
 
+  return pullData(url)
+}
+
+func pullData(url string) ([]sMAPData, error){
+  d := make([]rawsMAPData,0)
+  r := make([]sMAPData,0)
   response, err := http.Get(url)
   if err != nil {
-    return d, err
+    return r, err
   }
 
   defer response.Body.Close()
   contents, err := ioutil.ReadAll(response.Body)
   if err != nil {
-    return d, err
+    return r, err
   }
 
   err = json.Unmarshal(contents, &d)
   if err != nil {
-    return d, err
+    return r, err
   }
 
-  return d, nil
+  r = rawDataToClean(d)
+  return r, nil
 }
 
+func rawDataToClean(dirty []rawsMAPData) []sMAPData{
+  r := make([]sMAPData, len(dirty))
+
+  for i,d := range dirty{
+    r[i].Uuid = d.Uuid
+    r[i].Readings = make([]readPair, len(d.Readings))
+
+    for j,entry := range d.Readings{
+      r[i].Readings[j].value,_ = entry[1].Float64()
+    }
+  }
+  return r;
+}
 func smap_time(t int) string{
   if t == 0{
     return ""
