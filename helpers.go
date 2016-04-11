@@ -5,6 +5,7 @@ import (
   "net/http"
   "encoding/json"
   "io/ioutil"
+  "time"
 )
 
 func pullData(url string) ([]sMAPData, error){
@@ -39,6 +40,10 @@ func rawDataToClean(dirty []rawsMAPData) []sMAPData{
 
     for j,entry := range d.Readings{
       r[i].Readings[j].value,_ = entry[1].Float64()
+
+      rawT,_ := entry[0].Float64()
+      unixT := int64(rawT/1000)
+      r[i].Readings[j].time = time.Unix(unixT, 0)
     }
   }
   return r;
