@@ -3,17 +3,19 @@ import(
   "encoding/json"
   "time"
 )
-type rawsMAPData struct{
+type RawsMAPData struct{
   Uuid string `json:"uuid"`
   Readings [][]json.Number  `json:"Readings"`
+  Properties sMAPTagsProperties
+  Metadata map[string]interface{}
 }
 
 type SMAPData struct{
   Uuid string
-  Readings []readPair
+  Readings []ReadPair
 }
 
-type readPair struct{
+type ReadPair struct{
   Time time.Time
   Value float64
 }

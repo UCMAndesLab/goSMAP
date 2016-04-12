@@ -28,3 +28,11 @@ func (conn *sMAPConnection) Tags(uuid string) []SMAPTags{
   json.Unmarshal(s, &d)
   return d;
 }
+
+func (conn *sMAPConnection) UUIDExists(uuid string) bool{
+  // Check to see if the data was put in
+  // Remove tag from cache
+  conn.mc.Delete(tagKey(uuid))
+  tags := conn.Tags(uuid)
+  return len(tags) > 0 && len(tags[0].Path) > 0
+}

@@ -78,6 +78,7 @@ func TestPrev(t *testing.T){
     fmt.Printf("%s\n", d[0].Readings[0].Time)
 }
 
+
 func BenchmarkTagsCache(b *testing.B) {
     conn,_ := Connect(server, apiKey)
     for i := 0; i < b.N; i++ {
