@@ -7,7 +7,12 @@ import (
   "io/ioutil"
 )
 
-func (conn *sMAPConnection) Query(q string) ([]byte){
+// Use sMAP querying language
+//
+// See http://www.cs.berkeley.edu/~stevedh/smap2/archiver.html#archiverquery for further
+// documentation to retrieve data. The contents will be returned as json text if success,
+// and on some errors a text file
+func (conn *SMAPConnection) Query(q string) ([]byte){
   url := fmt.Sprintf("%sapi/query?key=%s", conn.Url, conn.APIkey)
   response, err := http.Post(url, "text/smap", bytes.NewBufferString(q))
   if err != nil {
@@ -22,8 +27,16 @@ func (conn *sMAPConnection) Query(q string) ([]byte){
   return contents
 }
 
-// We will not cache diddly
-func (conn *sMAPConnection) Data_uuid(uuid string, starttime int, endtime int, limit int) ([]SMAPData, error){
+// Get data given a uuid.
+//
+// starttime and endtime are unix times in seconds based off of the epoch. A
+// starttime of 0 will get data starting from the first entry and a endtime of
+// 0 will have no upper bound. Limit is the number of values to be retrieved.
+// Set to 0 if you do not want a limit.
+//
+// Although the return is an array of SMAPData, typically there should only be
+// one value with the given uuid.
+func (conn *SMAPConnection) Get(uuid string, starttime int, endtime int, limit int) ([]SMAPData, error){
   starttime_str := smap_time(starttime)
 
   // endtime doesn't work

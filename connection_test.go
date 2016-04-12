@@ -35,7 +35,7 @@ func TestDataCollection(t *testing.T){
     conn,err := Connect(server, apiKey)
     if err == nil{
       fmt.Printf("%s\n", conn.Url)
-      _, err := conn.Data_uuid(uuid, 0, 0, 10)
+      _, err := conn.Get(uuid, 0, 0, 10)
 
       if err !=nil {
         t.Error(err.Error())

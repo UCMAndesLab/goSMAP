@@ -58,6 +58,7 @@ func smap_time(t int) string{
   }
 }
 
+// Converts a time.Time into a json.Number that is readable by an sMAP archiver
 func TimeToNumber(t time.Time) json.Number{
   return json.Number(fmt.Sprintf("%d", t.Unix()*1000))
 }

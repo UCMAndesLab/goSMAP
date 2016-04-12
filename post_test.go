@@ -24,7 +24,7 @@ func generateFakeSMAPData(testUUID string) map[string]RawsMAPData{
   d[path] = RawsMAPData{
     Uuid : testUUID,
     Readings: entry,
-    Properties:sMAPTagsProperties{
+    Properties:SMAPTagsProperties{
       Timezone:"America/Los_Angeles",
       UnitofMeasure:"Pizzas Eaten",
       ReadingType:"double",
