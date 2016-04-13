@@ -1,30 +1,31 @@
-package gosMAP
+package gosMAP_test
 
 import (
     "fmt"
     "time"
     "testing"
     "encoding/json"
+    "github.com/alexbeltran/gosMAP"
 )
 // Test are ran in alphabetic order, and appended. We don't need to redeclare the server and apikey
-func generateFakeSMAPData(testUUID string) map[string]RawsMAPData{
-  d := make(map[string]RawsMAPData)
+func generateFakeSMAPData(testUUID string) map[string]gosMAP.RawsMAPData{
+  d := make(map[string]gosMAP.RawsMAPData)
 
   path := "/pizza/alex"
 
   // Generate Fake Data
   entry := [][]json.Number{}
   for i :=0; i < 4; i++{
-    entry = append(entry,[]json.Number{TimeToNumber(time.Now().Add(time.Duration(i)*time.Second)), json.Number(fmt.Sprintf("%d",i))})
+    entry = append(entry,[]json.Number{gosMAP.TimeToNumber(time.Now().Add(time.Duration(i)*time.Second)), json.Number(fmt.Sprintf("%d",i))})
   }
 
   // Add Metadata
   meta := make(map[string]interface{})
   meta["SourceName"] = "ThePizza"
-  d[path] = RawsMAPData{
+  d[path] = gosMAP.RawsMAPData{
     Uuid : testUUID,
     Readings: entry,
-    Properties:SMAPTagsProperties{
+    Properties:gosMAP.SMAPTagsProperties{
       Timezone:"America/Los_Angeles",
       UnitofMeasure:"Pizzas Eaten",
       ReadingType:"double",
@@ -36,7 +37,7 @@ func generateFakeSMAPData(testUUID string) map[string]RawsMAPData{
 
 
 func TestPost(t *testing.T){
-  conn,err := Connect(server, apiKey)
+  conn,err := gosMAP.Connect(server, apiKey)
   testUUID :="fc17ecdc-135a-4b07-8ac7-555efb2df7d5"
 
   if err != nil{

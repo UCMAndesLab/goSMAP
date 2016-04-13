@@ -1,9 +1,10 @@
-package gosMAP
+package gosMAP_test
 
 import (
     "fmt"
     "github.com/go-ini/ini"
     "testing"
+    "github.com/alexbeltran/gosMAP"
 )
 
 var server string
@@ -25,14 +26,14 @@ func init(){
 }
 
 func TestConnection(t *testing.T) {
-    _,err := Connect(server, apiKey)
+    _,err := gosMAP.Connect(server, apiKey)
     if err != nil{
       t.Error(err.Error())
     }
 }
 
 func TestDataCollection(t *testing.T){
-    conn,err := Connect(server, apiKey)
+    conn,err := gosMAP.Connect(server, apiKey)
     if err == nil{
       fmt.Printf("%s\n", conn.Url)
       _, err := conn.Get(uuid, 0, 0, 10)
@@ -46,7 +47,7 @@ func TestDataCollection(t *testing.T){
 }
 
 func TestQuery(t *testing.T){
-    conn,err := Connect(server, apiKey)
+    conn,err := gosMAP.Connect(server, apiKey)
     if err != nil{
       t.Error(err.Error())
     }
@@ -54,7 +55,7 @@ func TestQuery(t *testing.T){
 }
 
 func TestTags(t *testing.T){
-    conn,err := Connect(server, apiKey)
+    conn,err := gosMAP.Connect(server, apiKey)
     if err != nil{
       t.Error(err.Error())
     }
@@ -66,7 +67,7 @@ func TestTags(t *testing.T){
 }
 
 func TestPrev(t *testing.T){
-  conn,err := Connect(server, apiKey)
+  conn,err := gosMAP.Connect(server, apiKey)
     if err != nil{
       t.Error(err.Error())
     }
@@ -80,7 +81,7 @@ func TestPrev(t *testing.T){
 
 
 func BenchmarkTagsCache(b *testing.B) {
-    conn,_ := Connect(server, apiKey)
+    conn,_ := gosMAP.Connect(server, apiKey)
     for i := 0; i < b.N; i++ {
       conn.Tags(uuid)
     }
