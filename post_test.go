@@ -8,8 +8,8 @@ import (
     "github.com/alexbeltran/gosMAP"
 )
 // Test are ran in alphabetic order, and appended. We don't need to redeclare the server and apikey
-func generateFakeSMAPData(testUUID string) map[string]gosMAP.RawsMAPData{
-  d := make(map[string]gosMAP.RawsMAPData)
+func generateFakeSMAPData(testUUID string) map[string]gosMAP.RawData{
+  d := make(map[string]gosMAP.RawData)
 
   path := "/pizza/alex"
 
@@ -22,10 +22,10 @@ func generateFakeSMAPData(testUUID string) map[string]gosMAP.RawsMAPData{
   // Add Metadata
   meta := make(map[string]interface{})
   meta["SourceName"] = "ThePizza"
-  d[path] = gosMAP.RawsMAPData{
+  d[path] = gosMAP.RawData{
     Uuid : testUUID,
     Readings: entry,
-    Properties:gosMAP.SMAPTagsProperties{
+    Properties:gosMAP.TagsProperties{
       Timezone:"America/Los_Angeles",
       UnitofMeasure:"Pizzas Eaten",
       ReadingType:"double",

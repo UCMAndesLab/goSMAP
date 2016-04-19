@@ -8,7 +8,7 @@ import (
     "github.com/bradfitz/gomemcache/memcache"
 )
 
-type SMAPConnection struct{
+type Connection struct{
   Url string
   APIkey string
   Mc *memcache.Client
@@ -18,7 +18,7 @@ type rootPage struct{
   Contents []string
 }
 
-func validateConnection(conn SMAPConnection)(error){
+func validateConnection(conn Connection)(error){
   // is url valid
   response, err := http.Get(conn.Url)
   if err != nil {
@@ -45,8 +45,8 @@ func validateConnection(conn SMAPConnection)(error){
   }
 }
 
-func Connect(url string, key string)(SMAPConnection, error){
-  conn := SMAPConnection{
+func Connect(url string, key string)(Connection, error){
+  conn := Connection{
     Url:url,
     APIkey:key,
     Mc: memcache.New("127.0.0.1:11211"),

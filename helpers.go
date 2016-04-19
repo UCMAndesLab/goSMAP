@@ -8,9 +8,9 @@ import (
   "time"
 )
 
-func pullData(url string) ([]SMAPData, error){
-  d := make([]RawsMAPData,0)
-  r := make([]SMAPData,0)
+func pullData(url string) ([]Data, error){
+  d := make([]RawData,0)
+  r := make([]Data,0)
   response, err := http.Get(url)
   if err != nil {
     return r, err
@@ -31,8 +31,8 @@ func pullData(url string) ([]SMAPData, error){
   return r, nil
 }
 
-func rawDataToClean(dirty []RawsMAPData) []SMAPData{
-  r := make([]SMAPData, len(dirty))
+func rawDataToClean(dirty []RawData) []Data{
+  r := make([]Data, len(dirty))
 
   for i,d := range dirty{
     r[i].Uuid = d.Uuid

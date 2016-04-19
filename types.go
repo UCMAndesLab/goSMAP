@@ -5,14 +5,14 @@ import(
 )
 // RawsMAPData is what is returned by a request from the archiver. To make this
 // look cleaner, this value is typically converted to a type SMAPData as a return.
-type RawsMAPData struct{
+type RawData struct{
   Uuid string `json:"uuid"`
   Readings [][]json.Number  `json:"Readings"`
-  Properties SMAPTagsProperties
+  Properties TagsProperties
   Metadata map[string]interface{}
 }
 
-type SMAPData struct{
+type Data struct{
   Uuid string
   Readings []ReadPair
 }
@@ -23,16 +23,16 @@ type ReadPair struct{
   Value float64
 }
 
-type SMAPTagsProperties struct{
+type TagsProperties struct{
   Timezone string
   UnitofMeasure string
   ReadingType string
 }
 
 // This is the bare minimium of what sMAP returns to you as
-type SMAPTags struct{
+type Tags struct{
     Uuid string `json:"uuid"`
-    Properties SMAPTagsProperties
+    Properties TagsProperties
     Path string
     Metadata map[string]interface{}
 }

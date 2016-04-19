@@ -9,7 +9,7 @@ import (
 
 )
 
-func (conn *SMAPConnection) Post(data map[string]RawsMAPData) error{
+func (conn *Connection) Post(data map[string]RawData) error{
   m,e := json.Marshal(data)
   if e != nil{
     return e
