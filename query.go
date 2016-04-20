@@ -5,14 +5,10 @@ import (
   "fmt"
   "net/http"
   "io/ioutil"
+  "encoding/json"
 )
 
-// Use sMAP querying language
-//
-// See http://www.cs.berkeley.edu/~stevedh/smap2/archiver.html#archiverquery for further
-// documentation to retrieve data. The contents will be returned as json text if success,
-// and on some errors a text file
-func (conn *Connection) Query(q string) ([]byte){
+func (conn *Connection) query(q string)([]byte){
   url := fmt.Sprintf("%sapi/query?key=%s", conn.Url, conn.APIkey)
   response, err := http.Post(url, "text/smap", bytes.NewBufferString(q))
   if err != nil {
@@ -25,6 +21,20 @@ func (conn *Connection) Query(q string) ([]byte){
     return nil
   }
   return contents
+}
+
+// Use sMAP querying language
+//
+// See http://www.cs.berkeley.edu/~stevedh/smap2/archiver.html#archiverquery for further
+// documentation to retrieve data. The contents will be returned as json text if success,
+// and on some errors a text file
+func (conn *Connection) Query(q string) ([]Data){
+  b := conn.query(q)
+
+  d := make([]RawData, 0)
+  json.Unmarshal(b, &d)
+
+  return rawDataToClean(d)
 }
 
 // Get data given a uuid.

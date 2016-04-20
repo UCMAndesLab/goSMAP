@@ -21,7 +21,7 @@ func (conn *Connection) Tags(uuid string) []Tags{
   }else{
     // Cache Miss
     q := fmt.Sprintf("select * where uuid='%s'", uuid)
-    s = conn.Query(q)
+    s = conn.query(q)
     conn.Mc.Set(&memcache.Item{Key: key, Value: s, Expiration: 3600})
   }
   d := make([]Tags,0)
