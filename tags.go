@@ -29,6 +29,12 @@ func (conn *Connection) Tags(uuid string) []Tags{
   return d;
 }
 
+// Tag is similar to Tags, however only a single tag is returned
+func (conn *Connection) Tag(uuid string) Tags{
+  d := conn.Tags(uuid)
+  return d[0];
+}
+
 func (conn *Connection) UUIDExists(uuid string) bool{
   // Check to see if the data was put in
   // Remove tag from cache
