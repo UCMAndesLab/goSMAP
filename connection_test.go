@@ -32,6 +32,30 @@ func TestConnection(t *testing.T) {
     }
 }
 
+// There was a bug where a server without a trailing "/" would cause a crash.
+// Lets check to see if it works both ways.
+func TestConnectionTrailSlash(t *testing.T) {
+    s := server
+
+    // Without slash
+    if s[len(s)-1] == '/'{
+      s = s[:len(s)-1];
+    }
+    conn,err := gosMAP.Connect(s, apiKey)
+    _, err = conn.Get(uuid, 0, 0, 10)
+    if err != nil{
+      t.Error(err.Error())
+    }
+
+    // With Slash
+    s = s + "/"
+    conn,err = gosMAP.Connect(s, apiKey)
+    _, err = conn.Get(uuid, 0, 0, 10)
+    if err != nil{
+      t.Error(err.Error())
+    }
+}
+
 func TestDataCollection(t *testing.T){
     conn,err := gosMAP.Connect(server, apiKey)
     if err == nil{

@@ -46,6 +46,9 @@ func validateConnection(conn Connection)(error){
 }
 
 func Connect(url string, key string)(Connection, error){
+  if url[len(url)-1] != '/'{
+    url = url + "/"
+  }
   conn := Connection{
     Url:url,
     APIkey:key,
