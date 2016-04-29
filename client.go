@@ -52,8 +52,11 @@ func Connect(url string, key string)(Connection, error){
   conn := Connection{
     Url:url,
     APIkey:key,
-    Mc: memcache.New("127.0.0.1:11211"),
   }
   err := validateConnection(conn)
   return conn, err
+}
+
+func (conn *Connection) ConnectMemcache(server string){
+    conn.Mc = memcache.New(server)
 }

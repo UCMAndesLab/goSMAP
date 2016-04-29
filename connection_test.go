@@ -106,6 +106,22 @@ func TestPrev(t *testing.T){
 
 func BenchmarkTagsCache(b *testing.B) {
     conn,_ := gosMAP.Connect(server, apiKey)
+    conn.ConnectMemcache("localhost:11211")
+    for i := 0; i < b.N; i++ {
+      conn.Tags(uuid)
+    }
+}
+
+func BenchmarkTagsRemoteCache(b *testing.B) {
+    conn,_ := gosMAP.Connect(server, apiKey)
+    conn.ConnectMemcache("mercury:11211")
+    for i := 0; i < b.N; i++ {
+      conn.Tags(uuid)
+    }
+}
+
+func BenchmarkTagsNoCache(b *testing.B) {
+    conn,_ := gosMAP.Connect(server, apiKey)
     for i := 0; i < b.N; i++ {
       conn.Tags(uuid)
     }
