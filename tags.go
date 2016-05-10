@@ -36,7 +36,7 @@ func (conn *Connection) memcache_tags(uuid string) ([]byte, error){
 }
 
 // Get all tags associate with uuid
-func (conn *Connection) Tags(uuid string) []Tags{
+func (conn *Connection) Tags(uuid string) ([]Tags, error){
   s, err := conn.memcache_tags(uuid);
   if err != nil{
     s = conn.query_tags(uuid);
@@ -44,13 +44,21 @@ func (conn *Connection) Tags(uuid string) []Tags{
 
   d := make([]Tags,0)
   json.Unmarshal(s, &d)
-  return d;
+  if len(d)== 0{
+      return d, fmt.Errorf("No tags returned with uuid %s", uuid)
+  }
+
+  return d, nil;
 }
 
 // Tag is similar to Tags, however only a single tag is returned
-func (conn *Connection) Tag(uuid string) Tags{
-  d := conn.Tags(uuid)
-  return d[0];
+func (conn *Connection) Tag(uuid string)(Tags, error){
+  d, err := conn.Tags(uuid)
+  if err !=nil{
+      var t Tags
+      return t, err
+  }
+  return d[0], nil;
 }
 
 func (conn *Connection) UUIDExists(uuid string) bool{
@@ -59,6 +67,6 @@ func (conn *Connection) UUIDExists(uuid string) bool{
   if conn.Mc != nil{
     conn.Mc.Delete(tagKey(uuid))
   }
-  tags := conn.Tags(uuid)
-  return len(tags) > 0 && len(tags[0].Path) > 0
+  _, err := conn.Tag(uuid)
+  return err == nil
 }
