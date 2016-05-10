@@ -8,8 +8,8 @@ import(
 type RawData struct{
   Uuid string `json:"uuid"`
   Readings [][]json.Number  `json:"Readings"`
-  Properties TagsProperties
-  Metadata map[string]interface{}
+  Properties *TagsProperties   `json:",omitempty"`
+  Metadata map[string]interface{}  `json:",omitempty"`
 }
 
 type Data struct{
@@ -24,9 +24,9 @@ type ReadPair struct{
 }
 
 type TagsProperties struct{
-  Timezone string
-  UnitofMeasure string
-  ReadingType string
+  Timezone string   `json:",omitempty"`
+  UnitofMeasure string  `json:",omitempty"`
+  ReadingType string   `json:",omitempty"`
 }
 
 // This is the bare minimium of what sMAP returns to you as
