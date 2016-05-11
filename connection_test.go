@@ -4,7 +4,7 @@ import (
     "fmt"
     "github.com/go-ini/ini"
     "testing"
-    "github.com/alexbeltran/gosMAP"
+    "gitlab.pizzahobo.me/ucm-andeslab/gosMAP"
 )
 
 var server string
@@ -83,7 +83,11 @@ func TestTags(t *testing.T){
     if err != nil{
       t.Error(err.Error())
     }
-    d := conn.Tags(uuid)
+    
+    d,err := conn.Tags(uuid)
+    if err != nil{
+        t.Error(err.Error())
+    }
     if (uuid != d[0].Uuid){
       t.Error("UUID Mismatch")
     }
