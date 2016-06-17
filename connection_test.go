@@ -4,7 +4,7 @@ import (
     "fmt"
     "github.com/go-ini/ini"
     "testing"
-    "gitlab.pizzahobo.me/ucm-andeslab/gosMAP"
+    "../goSMAP"
 )
 
 var server string
