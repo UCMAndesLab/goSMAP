@@ -2,7 +2,7 @@ package gosMAP_test
 
 import (
   "fmt"
-  "../goSMAP"
+  "../gosMAP"
 )
 
 // This example gets the first 10 values of a uuid and print out all times and

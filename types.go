@@ -15,8 +15,8 @@ type RawData struct{
 type Data struct{
   Uuid string `json:"uuid,omitempty"`
   Readings []ReadPair `json:"Readings,omitempty"`
-  Properties TagsProperties
-  Metadata map[string]interface{}
+  Properties *TagsProperties `json:",omitempty"`
+  Metadata map[string]interface{} `json:",omitempty"`
 }
 
 // Each value returned by sMAP is a pair of time and float values.

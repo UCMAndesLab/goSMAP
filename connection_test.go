@@ -4,7 +4,7 @@ import (
     "fmt"
     "github.com/go-ini/ini"
     "testing"
-    "../goSMAP"
+    "../gosMAP"
 )
 
 var server string
@@ -83,7 +83,7 @@ func TestTags(t *testing.T){
     if err != nil{
       t.Error(err.Error())
     }
-    
+
     d,err := conn.Tags(uuid)
     if err != nil{
         t.Error(err.Error())
