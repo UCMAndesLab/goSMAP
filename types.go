@@ -6,15 +6,17 @@ import(
 // RawsMAPData is what is returned by a request from the archiver. To make this
 // look cleaner, this value is typically converted to a type SMAPData as a return.
 type RawData struct{
-  Uuid string `json:"uuid"`
-  Readings [][]json.Number  `json:"Readings"`
+  Uuid string `json:"uuid,omitempty"`
+  Readings [][]json.Number  `json:"Readings,omitempty"`
   Properties TagsProperties
   Metadata map[string]interface{}
 }
 
 type Data struct{
-  Uuid string
-  Readings []ReadPair
+  Uuid string `json:"uuid,omitempty"`
+  Readings []ReadPair `json:"Readings,omitempty"`
+  Properties TagsProperties
+  Metadata map[string]interface{}
 }
 
 // Each value returned by sMAP is a pair of time and float values.

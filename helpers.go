@@ -37,6 +37,8 @@ func rawDataToClean(dirty []RawData) []Data{
   for i,d := range dirty{
     r[i].Uuid = d.Uuid
     r[i].Readings = make([]ReadPair, len(d.Readings))
+    r[i].Metadata = d.Metadata
+    r[i].Properties = d.Properties
 
     for j,entry := range d.Readings{
       r[i].Readings[j].Value,_ = entry[1].Float64()

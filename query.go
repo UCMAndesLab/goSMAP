@@ -28,13 +28,22 @@ func (conn *Connection) query(q string)([]byte){
 // See http://www.cs.berkeley.edu/~stevedh/smap2/archiver.html#archiverquery for further
 // documentation to retrieve data. The contents will be returned as json text if success,
 // and on some errors a text file
-func (conn *Connection) Query(q string) ([]Data){
+func (conn *Connection) Query(q string) ([]Data, error){
   b := conn.query(q)
-
   d := make([]RawData, 0)
-  json.Unmarshal(b, &d)
+  err := json.Unmarshal(b, &d)
 
-  return rawDataToClean(d)
+  return rawDataToClean(d), err
+}
+
+// Similar to Query, but QueryList returns a string array. This is necessary for
+// for all ```select distinct``` queries.
+func (conn *Connection) QueryList(q string) ([]string, error){
+  b := conn.query(q)
+  d := make([]string, 0)
+  err := json.Unmarshal(b, &d)
+
+  return d, err
 }
 
 // Get data given a uuid.
