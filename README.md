@@ -1,6 +1,6 @@
 # gosMAP
 --
-    import "github.com/alexbeltran/gosMAP"
+    import "github.com/UCMAndesLab/goSMAP"
 
 This is a go binding for sMAP archiver. It is currently in a very early beta and
 is not ready for external use. Functions names, types, structures, and pretty

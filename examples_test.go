@@ -2,11 +2,11 @@ package gosMAP_test
 
 import (
   "fmt"
-  "github.com/alexbeltran/gosMAP"
+  "../goSMAP"
 )
 
 // This example gets the first 10 values of a uuid and print out all times and
-// values. 
+// values.
 func ExampleSMAPConnection_Get(){
   conn,e := gosMAP.Connect("server", "apikey")
 

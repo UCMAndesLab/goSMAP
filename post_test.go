@@ -5,7 +5,7 @@ import (
     "time"
     "testing"
     "encoding/json"
-    "github.com/alexbeltran/gosMAP"
+    "../goSMAP"
 )
 // Test are ran in alphabetic order, and appended. We don't need to redeclare the server and apikey
 func generateFakeSMAPData(testUUID string) map[string]gosMAP.RawData{
@@ -25,7 +25,7 @@ func generateFakeSMAPData(testUUID string) map[string]gosMAP.RawData{
   d[path] = gosMAP.RawData{
     Uuid : testUUID,
     Readings: entry,
-    Properties:gosMAP.TagsProperties{
+    Properties:&gosMAP.TagsProperties{
       Timezone:"America/Los_Angeles",
       UnitofMeasure:"Pizzas Eaten",
       ReadingType:"double",
