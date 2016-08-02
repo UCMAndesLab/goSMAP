@@ -38,3 +38,11 @@ type Tags struct{
     Path string
     Metadata map[string]interface{}
 }
+
+func (d *RawData)String()string{
+    b, err := json.MarshalIndent(d, "", "   ")
+
+    // Return nothing
+    if err !=nil{return ""}
+    return string(b)
+}
