@@ -61,7 +61,7 @@ func main(){
     }
     tag, err := conn.Tag(uuid)
     check(err)
-    sourceName := tag.Metadata["SourceName"].(string)
+    sourceName := tag.Path
 
 
     // Open CSV File to read from
