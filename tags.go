@@ -61,6 +61,40 @@ func (conn *Connection) Tag(uuid string)(Tags, error){
   return d[0], nil;
 }
 
+// UpdateTag changes the tag file
+// TODO: This is a huge concurency mess at the moment
+func (conn *Connection)UpdateTag(t Tags)(error){
+    if !conn.UUIDExists(t.Uuid){
+        return fmt.Errorf("Failed to update tag. Tag does not exit.")
+    }
+    return conn.insertTag(t);
+}
+
+func(conn *Connection)New(t Tags)(error){
+    if !conn.UUIDExists(t.Uuid){
+        return conn.insertTag(t);
+    }
+    return fmt.Errorf("Failed to make new item. UUID is not unique.")
+}
+
+func(conn *Connection)insertTag(t Tags)(error){
+    // Data field has to have something inside of it
+    fakeData := make([][]json.Number, 1)
+    fakeData[0] = make([]json.Number,2);
+    fakeData[0][0] = "0";
+    fakeData[0][1] = "0";
+
+    d := map[string]RawData{
+        t.Path:RawData{
+            Uuid: t.Uuid,
+            Properties: &t.Properties,
+            Metadata: t.Metadata,
+            Readings: fakeData,
+        },
+    }
+    return conn.Post(d)
+}
+
 func (conn *Connection) UUIDExists(uuid string) bool{
   // Check to see if the data was put in
   // Remove tag from cache just in case it was removed.
@@ -69,4 +103,23 @@ func (conn *Connection) UUIDExists(uuid string) bool{
   }
   _, err := conn.Tag(uuid)
   return err == nil
+}
+
+
+func empty(s string)bool{
+    return len(s)==0
+}
+
+func(p *TagsProperties)IsValid()bool{
+    if empty(p.Timezone) || empty(p.UnitofMeasure) || empty(p.ReadingType){
+        return false
+    }
+    return true
+}
+
+func (t *Tags)IsValid()bool{
+    if empty(t.Uuid) || empty(t.Path) || !t.Properties.IsValid(){
+        return false
+    }
+    return true;
 }

@@ -46,3 +46,12 @@ func (d *RawData)String()string{
     if err !=nil{return ""}
     return string(b)
 }
+
+// For metadata field
+
+type Location struct{
+    Building string`json:",omitempty"`
+    City string`json:",omitempty"`
+    State string`json:",omitempty"`
+    Country string`json:",omitempty"`
+}
