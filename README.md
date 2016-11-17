@@ -1,6 +1,6 @@
 # gosMAP
 --
-    import "github.com/UCMAndesLab/goSMAP"
+    import "github.com/alexbeltran/gosMAP"
 
 This is a go binding for sMAP archiver. It is currently in a very early beta and
 is not ready for external use. Functions names, types, structures, and pretty
@@ -59,6 +59,12 @@ will have no upper bound. Limit is the number of values to be retrieved. Set to
 Although the return is an array of SMAPData, typically there should only be one
 value with the given uuid.
 
+#### func (*Connection) New
+
+```go
+func (conn *Connection) New(t Tags) error
+```
+
 #### func (*Connection) Post
 
 ```go
@@ -75,7 +81,7 @@ Return the last value from given uuid
 #### func (*Connection) Query
 
 ```go
-func (conn *Connection) Query(q string) ([]RawData, error)
+func (conn *Connection) Query(q string) ([]Data, error)
 ```
 Use sMAP querying language
 
@@ -88,18 +94,20 @@ text if success, and on some errors a text file
 ```go
 func (conn *Connection) QueryList(q string) ([]string, error)
 ```
+Similar to Query, but QueryList returns a string array. This is necessary for
+for all ```select distinct``` queries.
 
 #### func (*Connection) Tag
 
 ```go
-func (conn *Connection) Tag(uuid string) Tags
+func (conn *Connection) Tag(uuid string) (Tags, error)
 ```
 Tag is similar to Tags, however only a single tag is returned
 
 #### func (*Connection) Tags
 
 ```go
-func (conn *Connection) Tags(uuid string) []Tags
+func (conn *Connection) Tags(uuid string) ([]Tags, error)
 ```
 Get all tags associate with uuid
 
@@ -109,12 +117,34 @@ Get all tags associate with uuid
 func (conn *Connection) UUIDExists(uuid string) bool
 ```
 
+#### func (*Connection) UpdateTag
+
+```go
+func (conn *Connection) UpdateTag(t Tags) error
+```
+UpdateTag changes the tag file TODO: This is a huge concurency mess at the
+moment
+
 #### type Data
 
 ```go
 type Data struct {
-	Uuid     string
-	Readings []ReadPair
+	Uuid       string                 `json:"uuid,omitempty"`
+	Readings   []ReadPair             `json:"Readings,omitempty"`
+	Properties *TagsProperties        `json:",omitempty"`
+	Metadata   map[string]interface{} `json:",omitempty"`
+}
+```
+
+
+#### type Location
+
+```go
+type Location struct {
+	Building string `json:",omitempty"`
+	City     string `json:",omitempty"`
+	State    string `json:",omitempty"`
+	Country  string `json:",omitempty"`
 }
 ```
 
@@ -123,15 +153,21 @@ type Data struct {
 
 ```go
 type RawData struct {
-	Uuid       string          `json:"uuid"`
-	Readings   [][]json.Number `json:"Readings"`
-	Properties TagsProperties
-	Metadata   map[string]interface{}
+	Uuid       string                 `json:"uuid"`
+	Readings   [][]json.Number        `json:"Readings"`
+	Properties *TagsProperties        `json:",omitempty"`
+	Metadata   map[string]interface{} `json:",omitempty"`
 }
 ```
 
 RawsMAPData is what is returned by a request from the archiver. To make this
 look cleaner, this value is typically converted to a type SMAPData as a return.
+
+#### func (*RawData) String
+
+```go
+func (d *RawData) String() string
+```
 
 #### type ReadPair
 
@@ -157,12 +193,25 @@ type Tags struct {
 
 This is the bare minimium of what sMAP returns to you as
 
+#### func (*Tags) IsValid
+
+```go
+func (t *Tags) IsValid() bool
+```
+
 #### type TagsProperties
 
 ```go
 type TagsProperties struct {
-	Timezone      string
-	UnitofMeasure string
-	ReadingType   string
+	Timezone      string `json:",omitempty"`
+	UnitofMeasure string `json:",omitempty"`
+	ReadingType   string `json:",omitempty"`
 }
+```
+
+
+#### func (*TagsProperties) IsValid
+
+```go
+func (p *TagsProperties) IsValid() bool
 ```
