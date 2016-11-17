@@ -9,6 +9,7 @@ type RawData struct{
   Uuid string `json:"uuid"`
   Readings [][]json.Number  `json:"Readings"`
   Properties *TagsProperties   `json:",omitempty"`
+  Path string `json:",omitempty"`
   Metadata map[string]interface{}  `json:",omitempty"`
 }
 
@@ -16,6 +17,7 @@ type Data struct{
   Uuid string `json:"uuid,omitempty"`
   Readings []ReadPair `json:"Readings,omitempty"`
   Properties *TagsProperties `json:",omitempty"`
+  Path string `json:",omitempty"`
   Metadata map[string]interface{} `json:",omitempty"`
 }
 
@@ -51,6 +53,8 @@ func (d *RawData)String()string{
 
 type Location struct{
     Building string`json:",omitempty"`
+    Room string`json:",omitempty"`
+    Floor string`json:",omitempty"`
     City string`json:",omitempty"`
     State string`json:",omitempty"`
     Country string`json:",omitempty"`
