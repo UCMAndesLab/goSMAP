@@ -6,6 +6,8 @@ import (
   "net/http"
   "io/ioutil"
   "encoding/json"
+  "hash/fnv"
+  "github.com/bradfitz/gomemcache/memcache"
 )
 
 func (conn *Connection) query(q string)([]byte){
@@ -23,27 +25,83 @@ func (conn *Connection) query(q string)([]byte){
   return contents
 }
 
+func queryKey(q string)string{
+    h:= fnv.New32a();
+    h.Write([]byte("query"))
+    h.Write([]byte(q))
+    return fmt.Sprintf("%d", h.Sum32())
+}
+
 // Use sMAP querying language
 //
 // See http://www.cs.berkeley.edu/~stevedh/smap2/archiver.html#archiverquery for further
 // documentation to retrieve data. The contents will be returned as json text if success,
 // and on some errors a text file
 func (conn *Connection) Query(q string) ([]Data, error){
-  b := conn.query(q)
-  d := make([]RawData, 0)
-  err := json.Unmarshal(b, &d)
+    var clean []Data;
+  key:=queryKey(q)
+  item, err := conn.Mc.Get(key)
+  if err == nil {
+    // Cache Hit
+    err = json.Unmarshal(item.Value, &clean);
+  }else{
+    // Cache Miss
+    fmt.Printf("CACHE MISS!%s\n", key)
+    b := conn.query(q)
 
-  return rawDataToClean(d), err
+    raw := make([]RawData, 0)
+    err := json.Unmarshal(b, &raw)
+    clean = rawDataToClean(raw)
+
+    if err != nil{
+        fmt.Printf("CACHE ERROR:!%s, Q:%s\n", err.Error(), q)
+    }
+
+    if conn.Mc == nil{
+        fmt.Printf("Memcache not connected\n")
+    }
+
+    if err == nil && conn.Mc != nil {
+        // Save in the cache
+        b, err :=json.Marshal(clean)
+
+        // Save
+        if err == nil{
+            err := conn.Mc.Set(&memcache.Item{Key: key, Value: b, Expiration: 3600})
+            if err != nil{
+                fmt.Printf("CACHE Saved!%s\n", err.Error())
+            }
+        // Return error
+        }else{
+            fmt.Printf("CACHE ERROR:!%s, Query: %s\n", err.Error(), q)
+            return clean, err;
+        }
+    }
+  }
+  return clean, err
 }
 
 // Similar to Query, but QueryList returns a string array. This is necessary for
 // for all ```select distinct``` queries.
-func (conn *Connection) QueryList(q string) ([]string, error){
-  b := conn.query(q)
-  d := make([]string, 0)
-  err := json.Unmarshal(b, &d)
+func (conn *Connection) QueryList(q string) (results []string, err error){
+  key:=queryKey(q)
+  item, err := conn.Mc.Get(key)
+  if err == nil {
+      // Cache hit
+    err = json.Unmarshal(item.Value, &results);
 
-  return d, err
+  }else{
+      // Cache miss
+      b := conn.query(q)
+      err := json.Unmarshal(b, &results)
+
+      //Save
+      if err == nil && conn.Mc != nil{
+            conn.Mc.Set(&memcache.Item{Key: key, Value: b, Expiration: 3600})
+      }
+  }
+  return results, err
+
 }
 
 // Get data given a uuid.
