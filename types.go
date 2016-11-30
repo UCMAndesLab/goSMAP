@@ -10,7 +10,7 @@ type RawData struct{
   Readings [][]json.Number  `json:"Readings"`
   Properties *TagsProperties   `json:",omitempty"`
   Path string `json:",omitempty"`
-  Metadata map[string]interface{}  `json:",omitempty"`
+  Metadata *Metadata  `json:",omitempty"`
 }
 
 type Data struct{
@@ -18,7 +18,7 @@ type Data struct{
   Readings []ReadPair `json:"Readings,omitempty"`
   Properties *TagsProperties `json:",omitempty"`
   Path string `json:",omitempty"`
-  Metadata map[string]interface{} `json:",omitempty"`
+  Metadata *Metadata `json:",omitempty"`
 }
 
 // Each value returned by sMAP is a pair of time and float values.
@@ -38,7 +38,7 @@ type Tags struct{
     Uuid string `json:"uuid"`
     Properties TagsProperties
     Path string
-    Metadata map[string]interface{}
+    Metadata *Metadata
 }
 
 func (d *RawData)String()string{
@@ -50,6 +50,11 @@ func (d *RawData)String()string{
 }
 
 // For metadata field
+type Metadata struct{
+    SourceName string`json:",omitempty"`
+    Location Location`json:",omitempty"`
+    Haystack Haystack`json:",omitempty"`
+}
 
 type Location struct{
     Building string`json:",omitempty"`
@@ -58,4 +63,8 @@ type Location struct{
     City string`json:",omitempty"`
     State string`json:",omitempty"`
     Country string`json:",omitempty"`
+}
+
+type Haystack struct{
+    Tags string`json:",omitempty"`
 }
