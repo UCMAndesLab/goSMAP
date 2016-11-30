@@ -32,24 +32,33 @@ func queryKey(q string)string{
     return fmt.Sprintf("%d", h.Sum32())
 }
 
+func (conn *Connection)cacheGet(q string)(b []byte, err error){
+  key:=queryKey(q)
+
+  if conn.Mc != nil{
+      item, err := conn.Mc.Get(key)
+      if err != nil{
+            b= item.Value
+      }
+  }else{
+      err = fmt.Errorf("Not using cache");
+  }
+  return b,err;
+
+}
+
 // Use sMAP querying language
 //
 // See http://www.cs.berkeley.edu/~stevedh/smap2/archiver.html#archiverquery for further
 // documentation to retrieve data. The contents will be returned as json text if success,
 // and on some errors a text file
 func (conn *Connection) Query(q string) (results []Data, err error){
-    var clean []Data;
   key:=queryKey(q)
-  var item *memcache.Item;
-
-  if conn.Mc != nil{
-      item, err = conn.Mc.Get(key)
-  }else{
-      err = fmt.Errorf("Not using cache");
-  }
+    var clean []Data;
+    b, err := conn.cacheGet(q);
   if err == nil {
     // Cache Hit
-    err = json.Unmarshal(item.Value, &clean);
+    err = json.Unmarshal(b, &clean);
   }else{
       err = nil
     // Cache Miss
@@ -92,16 +101,10 @@ func (conn *Connection) Query(q string) (results []Data, err error){
 // for all ```select distinct``` queries.
 func (conn *Connection) QueryList(q string) (results []string, err error){
   key:=queryKey(q)
-  var item *memcache.Item;
-
-  if conn.Mc != nil{
-      item, err = conn.Mc.Get(key)
-  }else{
-      err = fmt.Errorf("Not using cache");
-  }
+  b, err := conn.cacheGet(q);
   if err == nil {
       // Cache hit
-    err = json.Unmarshal(item.Value, &results);
+    err = json.Unmarshal(b, &results);
 
   }else{
       // Cache miss
