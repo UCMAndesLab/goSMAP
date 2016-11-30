@@ -20,8 +20,10 @@ func generateFakeSMAPData(testUUID string) map[string]gosMAP.RawData{
   }
 
   // Add Metadata
-  meta := make(map[string]interface{})
-  meta["SourceName"] = "ThePizza"
+  meta := gosMAP.Metadata{
+      SourceName: "ThePizza",
+  }
+
   d[path] = gosMAP.RawData{
     Uuid : testUUID,
     Readings: entry,
@@ -30,7 +32,7 @@ func generateFakeSMAPData(testUUID string) map[string]gosMAP.RawData{
       UnitofMeasure:"Pizzas Eaten",
       ReadingType:"double",
     },
-    Metadata:meta,
+    Metadata:&meta,
     }
   return d
 }

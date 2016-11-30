@@ -91,7 +91,7 @@ func TestTags(t *testing.T){
     if (uuid != d[0].Uuid){
       t.Error("UUID Mismatch")
     }
-    fmt.Printf("%s\n", string(d[0].Metadata["SourceName"].(string)))
+    fmt.Printf("%s\n", d[0].Metadata.SourceName)
 }
 
 func TestPrev(t *testing.T){
