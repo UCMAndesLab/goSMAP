@@ -37,14 +37,21 @@ func queryKey(q string)string{
 // See http://www.cs.berkeley.edu/~stevedh/smap2/archiver.html#archiverquery for further
 // documentation to retrieve data. The contents will be returned as json text if success,
 // and on some errors a text file
-func (conn *Connection) Query(q string) ([]Data, error){
+func (conn *Connection) Query(q string) (results []Data, err error){
     var clean []Data;
   key:=queryKey(q)
-  item, err := conn.Mc.Get(key)
+  var item *memcache.Item;
+
+  if conn.Mc != nil{
+      item, err = conn.Mc.Get(key)
+  }else{
+      err = fmt.Errorf("Not using cache");
+  }
   if err == nil {
     // Cache Hit
     err = json.Unmarshal(item.Value, &clean);
   }else{
+      err = nil
     // Cache Miss
     fmt.Printf("CACHE MISS!%s\n", key)
     b := conn.query(q)
@@ -85,7 +92,13 @@ func (conn *Connection) Query(q string) ([]Data, error){
 // for all ```select distinct``` queries.
 func (conn *Connection) QueryList(q string) (results []string, err error){
   key:=queryKey(q)
-  item, err := conn.Mc.Get(key)
+  var item *memcache.Item;
+
+  if conn.Mc != nil{
+      item, err = conn.Mc.Get(key)
+  }else{
+      err = fmt.Errorf("Not using cache");
+  }
   if err == nil {
       // Cache hit
     err = json.Unmarshal(item.Value, &results);
@@ -93,7 +106,7 @@ func (conn *Connection) QueryList(q string) (results []string, err error){
   }else{
       // Cache miss
       b := conn.query(q)
-      err := json.Unmarshal(b, &results)
+      err = json.Unmarshal(b, &results)
 
       //Save
       if err == nil && conn.Mc != nil{
