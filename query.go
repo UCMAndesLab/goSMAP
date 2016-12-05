@@ -36,10 +36,11 @@ func (conn *Connection)cacheGet(q string)(b []byte, err error){
   key:=queryKey(q)
 
   if conn.Mc != nil{
-      item, err := conn.Mc.Get(key)
-      if err != nil{
-            b= item.Value
+      item, lerr := conn.Mc.Get(key)
+      if lerr != nil && item != nil{
+            return item.Value, nil;
       }
+      err = fmt.Errorf("Cache miss");
   }else{
       err = fmt.Errorf("Not using cache");
   }
@@ -57,6 +58,7 @@ func (conn *Connection) Query(q string) (results []Data, err error){
     var clean []Data;
     b, err := conn.cacheGet(q);
   if err == nil {
+    fmt.Printf("CACHE Hit!%s%s\n", key, string(b))
     // Cache Hit
     err = json.Unmarshal(b, &clean);
   }else{
