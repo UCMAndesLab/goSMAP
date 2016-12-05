@@ -54,6 +54,11 @@ type Metadata struct{
     SourceName string`json:",omitempty"`
     Location Location`json:",omitempty"`
     Haystack Haystack`json:",omitempty"`
+    Extra Extra`json:",omitempty"`
+}
+
+type Extra struct{
+    Active bool `json:",omitempty"`
 }
 
 type Location struct{
