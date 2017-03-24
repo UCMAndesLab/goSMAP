@@ -7,7 +7,7 @@ import(
 // look cleaner, this value is typically converted to a type SMAPData as a return.
 type RawData struct{
   Uuid string `json:"uuid"`
-  Readings [][]json.Number  `json:"Readings"`
+  Readings [][]float64  `json:"Readings,string"`
   Properties *TagsProperties   `json:",omitempty"`
   Path string `json:",omitempty"`
   Metadata *Metadata  `json:",omitempty"`

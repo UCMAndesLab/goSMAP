@@ -42,9 +42,9 @@ func rawDataToClean(dirty []RawData) []Data{
     r[i].Path = d.Path
 
     for j,entry := range d.Readings{
-      r[i].Readings[j].Value,_ = entry[1].Float64()
+      r[i].Readings[j].Value = entry[1]
 
-      rawT,_ := entry[0].Float64()
+      rawT := entry[0]
       unixT := int64(rawT/1000)
       r[i].Readings[j].Time = time.Unix(unixT, 0)
     }

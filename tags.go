@@ -79,10 +79,10 @@ func(conn *Connection)New(t Tags)(error){
 
 func(conn *Connection)insertTag(t Tags)(error){
     // Data field has to have something inside of it
-    fakeData := make([][]json.Number, 1)
-    fakeData[0] = make([]json.Number,2);
-    fakeData[0][0] = "0";
-    fakeData[0][1] = "0";
+    fakeData := make([][]float64, 1)
+    fakeData[0] = make([]float64,2);
+    fakeData[0][0] = 0.0;
+    fakeData[0][1] = 0.0;
 
     d := map[string]RawData{
         t.Path:RawData{
