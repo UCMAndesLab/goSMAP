@@ -38,7 +38,7 @@ func (conn *Connection) cacheGet(q string) (b []byte, err error) {
 
 	if conn.Mc != nil {
 		item, lerr := conn.Mc.Get(key)
-		if lerr != nil && item != nil {
+		if lerr == nil && item != nil {
 			return item.Value, nil
 		}
 		err = fmt.Errorf("Cache miss")
@@ -49,7 +49,7 @@ func (conn *Connection) cacheGet(q string) (b []byte, err error) {
 
 }
 
-// Use sMAP querying language
+// Query using sMAP querying language
 //
 // See http://www.cs.berkeley.edu/~stevedh/smap2/archiver.html#archiverquery for further
 // documentation to retrieve data. The contents will be returned as json text if success,
@@ -59,39 +59,24 @@ func (conn *Connection) Query(q string) (results []Data, err error) {
 	var clean []Data
 	b, err := conn.cacheGet(q)
 	if err == nil {
-		fmt.Printf("CACHE Hit!%s%s\n", key, string(b))
 		// Cache Hit
 		err = json.Unmarshal(b, &clean)
 	} else {
-		err = nil
 		// Cache Miss
-		fmt.Printf("CACHE MISS!%s\n", key)
 		b := conn.query(q)
 
 		raw := make([]RawData, 0)
-		err := json.Unmarshal(b, &raw)
+		err = json.Unmarshal(b, &raw)
 		clean = rawDataToClean(raw)
 
-		if err != nil {
-			fmt.Printf("CACHE ERROR:!%s, Q:%s\n", err.Error(), q)
-		}
-
-		if conn.Mc == nil {
-			fmt.Printf("Memcache not connected\n")
-		}
-
 		if err == nil && conn.Mc != nil {
+			var savebin []byte
 			// Save in the cache
-			b, err := json.Marshal(clean)
-
+			savebin, err = json.Marshal(clean)
 			// Save
 			if err == nil {
-				err := conn.Mc.Set(&memcache.Item{Key: key, Value: b, Expiration: 3600})
-				if err != nil {
-					fmt.Printf("CACHE Failed!%s\n", err.Error())
-				} // Return error
+				err = conn.Mc.Set(&memcache.Item{Key: key, Value: savebin, Expiration: 3600})
 			} else {
-				fmt.Printf("CACHE ERROR:!%s, Query: %s\n", err.Error(), q)
 				return clean, err
 			}
 		}
