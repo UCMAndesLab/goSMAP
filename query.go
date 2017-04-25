@@ -54,34 +54,31 @@ func (conn *Connection) cacheGet(q string) (b []byte, err error) {
 // See http://www.cs.berkeley.edu/~stevedh/smap2/archiver.html#archiverquery for further
 // documentation to retrieve data. The contents will be returned as json text if success,
 // and on some errors a text file
-func (conn *Connection) Query(q string) (results []Data, err error) {
+func (conn *Connection) Query(q string) (results []RawData, err error) {
 	key := queryKey(q)
-	var clean []Data
+	var raw []RawData
 	b, err := conn.cacheGet(q)
 	if err == nil {
 		// Cache Hit
-		err = json.Unmarshal(b, &clean)
+		err = json.Unmarshal(b, &raw)
 	} else {
 		// Cache Miss
 		b := conn.query(q)
 
-		raw := make([]RawData, 0)
 		err = json.Unmarshal(b, &raw)
-		clean = rawDataToClean(raw)
-
 		if err == nil && conn.Mc != nil {
 			var savebin []byte
 			// Save in the cache
-			savebin, err = json.Marshal(clean)
+			savebin, err = json.Marshal(raw)
 			// Save
 			if err == nil {
 				err = conn.Mc.Set(&memcache.Item{Key: key, Value: savebin, Expiration: 3600})
 			} else {
-				return clean, err
+				return raw, err
 			}
 		}
 	}
-	return clean, err
+	return raw, err
 }
 
 // QueryList is a query that returns a string array. This is necessary for
@@ -116,7 +113,7 @@ func (conn *Connection) QueryList(q string) (results []string, err error) {
 //
 // Although the return is an array of SMAPData, typically there should only be
 // one value with the given uuid.
-func (conn *Connection) Get(uuid string, starttime int, endtime int, limit int) ([]Data, error) {
+func (conn *Connection) Get(uuid string, starttime int, endtime int, limit int) ([]RawData, error) {
 	starttimeStr := smap_time(starttime)
 
 	// endtime doesn't work

@@ -2,14 +2,48 @@ package gosMAP
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 )
+
+type Row struct {
+	Time  int64
+	Value float64
+}
+
+// MarshalJSON is a custom type says we will be transmitting data in the form of [int float64]
+func (r *Row) MarshalJSON() ([]byte, error) {
+	arr := []interface{}{r.Time, r.Value}
+	return json.Marshal(arr)
+}
+
+// UnmarshalJSON converts [int float] to a proper go type.
+func (r *Row) UnmarshalJSON(bs []byte) error {
+	arr := []interface{}{}
+	json.Unmarshal(bs, &arr)
+
+	switch t := arr[0].(type) {
+	case int64:
+		r.Time = t
+	case float64:
+		r.Time = int64(t)
+	default:
+		return fmt.Errorf("Element 0 is of type %T; expected a int64", arr[0])
+	}
+
+	v, ok := arr[1].(float64)
+	if !ok {
+		return fmt.Errorf("Element 1 is of type %T; expected a float64", arr[1])
+	}
+	r.Value = v
+	return nil
+}
 
 // RawsMAPData is what is returned by a request from the archiver. To make this
 // look cleaner, this value is typically converted to a type SMAPData as a return.
 type RawData struct {
 	Uuid       string          `json:"uuid"`
-	Readings   [][]float64     `json:"Readings,string"`
+	Readings   []Row           `json:"Readings,string"`
 	Properties *TagsProperties `json:",omitempty"`
 	Path       string          `json:",omitempty"`
 	Metadata   *Metadata       `json:",omitempty"`
