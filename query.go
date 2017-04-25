@@ -84,7 +84,7 @@ func (conn *Connection) Query(q string) (results []Data, err error) {
 	return clean, err
 }
 
-// Similar to Query, but QueryList returns a string array. This is necessary for
+// QueryList is a query that returns a string array. This is necessary for
 // for all ```select distinct``` queries.
 func (conn *Connection) QueryList(q string) (results []string, err error) {
 	key := queryKey(q)
@@ -117,15 +117,15 @@ func (conn *Connection) QueryList(q string) (results []string, err error) {
 // Although the return is an array of SMAPData, typically there should only be
 // one value with the given uuid.
 func (conn *Connection) Get(uuid string, starttime int, endtime int, limit int) ([]Data, error) {
-	starttime_str := smap_time(starttime)
+	starttimeStr := smap_time(starttime)
 
 	// endtime doesn't work
 	if endtime == 0 {
 		endtime = 2000000000000
 	}
-	endtime_str := smap_time(endtime)
+	endtimeStr := smap_time(endtime)
 
-	url := fmt.Sprintf("%sapi/data/uuid/%s?startime=%s&endtime=%s&limit=%d", conn.Url, uuid, starttime_str, endtime_str, limit)
+	url := fmt.Sprintf("%sapi/data/uuid/%s?startime=%s&endtime=%s&limit=%d", conn.Url, uuid, starttimeStr, endtimeStr, limit)
 
 	return pullData(url)
 }
